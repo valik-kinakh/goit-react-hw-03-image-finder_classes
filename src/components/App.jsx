@@ -10,6 +10,8 @@ import Button from './Button';
 import Modal from './Modal';
 import Searchbar from './Searchbar';
 
+const IMAGES_PER_REQUEST = 12;
+
 class App extends React.Component {
   state = {
     page: 1,
@@ -20,15 +22,6 @@ class App extends React.Component {
     showModal: false,
     modalImageURL: '',
   };
-
-  componentDidMount() {
-    const { query, page } = this.state;
-    //here problem
-    if (!query) return;
-
-    this.setLoading(true);
-    this.getImages(query, page);
-  }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
     if (
@@ -42,7 +35,10 @@ class App extends React.Component {
       this.getImages(query, page);
     }
 
-    if (prevState.images !== this.state.images) {
+    if (
+      prevState.images !== this.state.images &&
+      this.state.images.length > IMAGES_PER_REQUEST
+    ) {
       window.scrollTo({
         top: document.documentElement.scrollHeight,
         behavior: 'smooth',
